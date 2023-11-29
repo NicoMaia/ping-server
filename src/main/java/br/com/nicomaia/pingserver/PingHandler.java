@@ -19,7 +19,7 @@ public class PingHandler extends TextWebSocketHandler {
             InetAddress address = Inet4Address.getByName(message.getPayload());
             LocalDateTime started = LocalDateTime.now();
 
-            if (address.isReachable(60000)) {
+            if (address.isReachable(10000)) {
                 session.sendMessage(new TextMessage(sendDiff(address, started)));
             } else {
                 session.sendMessage(new TextMessage(sendTimeout(address)));
