@@ -22,7 +22,7 @@ public class PingHandler extends TextWebSocketHandler {
             if (address.isReachable(60000)) {
                 session.sendMessage(new TextMessage(sendDiff(address, started)));
             } else {
-                session.sendMessage(new TextMessage("Esgotado o tempo limite do pedido."));
+                session.sendMessage(new TextMessage("Esgotado o tempo limite."));
             }
 
             Thread.sleep(1000);
