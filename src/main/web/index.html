@@ -131,8 +131,8 @@
         window.onload = function () {
             let container = document.querySelector('#start');
 
-            pings.forEach(function (pingConfig) {
-                container.append(getSectionContainer(pingConfig));
+            pings.forEach(function (config) {
+                container.append(getSectionContainer(config));
             });
         };
     </script>
