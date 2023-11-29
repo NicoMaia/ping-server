@@ -1,0 +1,111 @@
+<html>
+<head>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+        }
+
+        .ping-container {
+            border: 1px solid black;
+            padding: 2px;
+            width: 250px;
+            height: 50px;
+            overflow-y: scroll;
+        }
+    </style>
+    <script>
+        const pings = [
+            {
+                label: "Rede Interna",
+                ips: [
+                    "192.168.1.1", // main router
+                    "192.168.1.3", // main switch
+                ]
+            },
+            {
+                label: "Rede Externa",
+                ips: [
+                    "192.168.1.30", // google-wifi
+                    "192.168.1.31", // allan-wifi
+                    "192.168.1.32", // mario-wifi
+                ]
+            },
+            {
+                label: "Cameras",
+                ips: [
+                    "192.168.1.160", // Harry
+                    "192.168.1.161", // Hermione
+                ]
+            },
+            {
+                label: "Redfox",
+                ips: [
+                    "192.168.100.1", // redfox router
+                    "10.255.255.7", // redfox gateway
+                    "1.1.1.1", // cloudflare via redfox
+                    "8.8.4.4", // google via redfox
+                ]
+            },
+            {
+                label: "Vivo",
+                ips: [
+                    "192.168.0.1", // vivo router
+                    "200.100.88.206", // redfox gateway
+                    "8.8.8.8", // google via vivo
+                    "1.0.0.1", // cloudflare via vivo
+                ],
+            },
+        ];
+
+        window.onload = function () {
+            let container = document.querySelector('#start');
+
+            pings.forEach(function (pingConfig) {
+                let sectionContainer = document.createElement('div');
+
+                let sectionLabel = document.createElement('div');
+                sectionLabel.innerText = pingConfig.label;
+                sectionContainer.append(sectionLabel);
+
+                let pingsContainer = document.createElement('div');
+                sectionContainer.append(pingsContainer);
+
+                container.append(sectionContainer);
+
+                pingConfig.ips.forEach(ip => {
+                    let pingContainer = document.createElement('div');
+                    pingContainer.classList.add('ping-container');
+
+                    var socket = new WebSocket("ws://localhost:8080/ping");
+
+                    socket.onopen = function () {
+                        socket.send(ip);
+                    };
+
+                    socket.onmessage = function (event) {
+                        let pingResponseDiv = document.createElement('div');
+                        pingResponseDiv.innerText = event.data;
+                        pingContainer.append(pingResponseDiv);
+
+                        pingContainer.scrollTo({
+                            behavior: 'instant',
+                            top: pingContainer.scrollHeight
+                        });
+                    };
+
+                    pingsContainer.append(pingContainer);
+                });
+            });
+        };
+    </script>
+</head>
+<body>
+<div class="container" id="start"></div>
+</body>
+</html>
