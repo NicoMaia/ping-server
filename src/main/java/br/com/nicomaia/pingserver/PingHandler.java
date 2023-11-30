@@ -1,5 +1,7 @@
 package br.com.nicomaia.pingserver;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -13,29 +15,47 @@ import java.time.temporal.ChronoUnit;
 
 @Component
 public class PingHandler extends TextWebSocketHandler {
+    private static final int PING_TIMEOUT = 10000;
+
+    private ObjectMapper mapper;
+
+    public PingHandler(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
+
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException, InterruptedException {
+        InetAddress address = Inet4Address.getByName(message.getPayload());
+
         while (session.isOpen()) {
-            InetAddress address = Inet4Address.getByName(message.getPayload());
-            LocalDateTime started = LocalDateTime.now();
-
-            if (address.isReachable(10000)) {
-                session.sendMessage(new TextMessage(sendDiff(address, started)));
-            } else {
-                session.sendMessage(new TextMessage(sendTimeout(address)));
-            }
-
+            session.sendMessage(getTextResponse(ping(address)));
             Thread.sleep(1000);
         }
     }
 
-    private String sendDiff(InetAddress address, LocalDateTime started) {
-        LocalDateTime finished = LocalDateTime.now();
+    private PingResponse ping(InetAddress address) throws IOException {
+        LocalDateTime started = LocalDateTime.now();
 
-        return String.format("%s: tempo=%dms%n", address.getHostAddress(), ChronoUnit.MILLIS.between(started, finished));
+        if (address.isReachable(PING_TIMEOUT)) {
+            return sendSuccess(address, started);
+        }
+
+        return sendTimeout(address);
     }
 
-    private String sendTimeout(InetAddress address) {
-        return String.format("%s: Timeout", address.getHostAddress());
+    private TextMessage getTextResponse(PingResponse pingResponse) throws JsonProcessingException {
+        return new TextMessage(mapper.writeValueAsString(pingResponse));
+    }
+
+    private PingResponse sendSuccess(InetAddress address, LocalDateTime started) {
+        LocalDateTime finished = LocalDateTime.now();
+
+        return PingResponse.success(
+                address.getHostAddress(),
+                ChronoUnit.MILLIS.between(started, finished));
+    }
+
+    private PingResponse sendTimeout(InetAddress address) {
+        return PingResponse.timeout(address.getHostAddress());
     }
 }

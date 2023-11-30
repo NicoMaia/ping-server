@@ -141,6 +141,30 @@
             };
         }
 
+        function getPingResponse(response, pingContent) {
+            let pingResponseDiv = document.createElement('div');
+            pingResponseDiv.classList.add('ping-response');
+            pingResponseDiv.classList.add('blink');
+
+            if (response.success) {
+                if (response.time > 15) {
+                    pingResponseDiv.classList.add('warning');
+                } else {
+                    pingResponseDiv.classList.add('success');
+                }
+
+                pingResponseDiv.innerText = `${response.address}: tempo=${response.time}ms`;
+            } else {
+                pingResponseDiv.classList.add('error');
+                pingResponseDiv.innerText = `${response.address}: timeout`;
+            }
+
+            if (pingContent.children.length > 5) {
+                pingContent.removeChild(pingContent.firstChild);
+            }
+            return pingResponseDiv;
+        }
+
         window.onload = function () {
             let container = document.querySelector('#start');
 
