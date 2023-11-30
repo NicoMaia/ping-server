@@ -38,6 +38,27 @@
             padding: 5px;
             overflow-y: hidden;
         }
+
+        .ping-response.warning {
+            color: darkorange;
+        }
+
+        .ping-response.error {
+            color: darkred;
+        }
+
+        .blink {
+            animation: blink 4s linear normal;
+        }
+
+        @keyframes blink {
+            0% {
+                background-color: darkgrey;
+            }
+            25% {
+                background-color: transparent;
+            }
+        }
     </style>
     <script>
         const pings = [
@@ -130,9 +151,8 @@
             };
 
             socket.onmessage = function (event) {
-                let pingResponseDiv = document.createElement('div');
-                pingResponseDiv.innerText = event.data;
-                pingContent.append(pingResponseDiv);
+                const response = JSON.parse(event.data);
+                pingContent.append(getPingResponse(response, pingContent));
 
                 pingContent.scrollTo({
                     behavior: 'instant',
@@ -159,7 +179,7 @@
                 pingResponseDiv.innerText = `${response.address}: timeout`;
             }
 
-            if (pingContent.children.length > 5) {
+            if (pingContent.children.length > 3) {
                 pingContent.removeChild(pingContent.firstChild);
             }
             return pingResponseDiv;

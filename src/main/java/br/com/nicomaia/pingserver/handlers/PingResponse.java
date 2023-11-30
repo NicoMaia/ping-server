@@ -1,4 +1,4 @@
-package br.com.nicomaia.pingserver;
+package br.com.nicomaia.pingserver.handlers;
 
 public class PingResponse {
     private boolean success;

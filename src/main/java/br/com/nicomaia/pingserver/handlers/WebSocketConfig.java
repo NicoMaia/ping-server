@@ -1,4 +1,4 @@
-package br.com.nicomaia.pingserver;
+package br.com.nicomaia.pingserver.handlers;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;

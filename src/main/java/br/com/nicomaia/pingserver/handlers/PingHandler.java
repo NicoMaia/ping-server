@@ -1,4 +1,4 @@
-package br.com.nicomaia.pingserver;
+package br.com.nicomaia.pingserver.handlers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
