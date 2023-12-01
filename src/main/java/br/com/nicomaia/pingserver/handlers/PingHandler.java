@@ -33,14 +33,18 @@ public class PingHandler extends TextWebSocketHandler {
         }
     }
 
-    private PingResponse ping(InetAddress address) throws IOException {
+    private PingResponse ping(InetAddress address) {
         LocalDateTime started = LocalDateTime.now();
 
-        if (address.isReachable(PING_TIMEOUT)) {
-            return sendSuccess(address, started);
-        }
+        try {
+            if (address.isReachable(PING_TIMEOUT)) {
+                return sendSuccess(address, started);
+            }
 
-        return sendTimeout(address);
+            return sendTimeout(address);
+        } catch (IOException exception) {
+            return sendError(address, exception);
+        }
     }
 
     private TextMessage getTextResponse(PingResponse pingResponse) throws JsonProcessingException {
@@ -57,5 +61,11 @@ public class PingHandler extends TextWebSocketHandler {
 
     private PingResponse sendTimeout(InetAddress address) {
         return PingResponse.timeout(address.getHostAddress());
+    }
+
+    private PingResponse sendError(InetAddress address, IOException exception) {
+        return PingResponse.error(
+                address.getHostAddress(),
+                exception.getMessage());
     }
 }

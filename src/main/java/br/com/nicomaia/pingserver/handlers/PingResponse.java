@@ -3,6 +3,7 @@ package br.com.nicomaia.pingserver.handlers;
 public class PingResponse {
     private boolean success;
     private String address;
+    private String message;
     private long time;
 
     private PingResponse() {
@@ -14,6 +15,10 @@ public class PingResponse {
 
     public String getAddress() {
         return address;
+    }
+
+    public String getMessage() {
+        return message;
     }
 
     public long getTime() {
@@ -41,6 +46,15 @@ public class PingResponse {
         PingResponse pingResponse = new PingResponse();
         pingResponse.success = false;
         pingResponse.address = address;
+
+        return pingResponse;
+    }
+
+    public static PingResponse error(String address, String message) {
+        PingResponse pingResponse = new PingResponse();
+        pingResponse.success = false;
+        pingResponse.address = address;
+        pingResponse.message = message;
 
         return pingResponse;
     }

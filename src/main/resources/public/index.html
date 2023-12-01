@@ -106,15 +106,15 @@
         ];
 
         function getSectionContainer(sectionConfig) {
-            let sectionContainer = document.createElement('div');
+            const sectionContainer = document.createElement('div');
             sectionContainer.classList.add('section-container');
 
-            let sectionLabel = document.createElement('div');
+            const sectionLabel = document.createElement('div');
             sectionLabel.classList.add('section-label');
             sectionLabel.innerText = sectionConfig.label;
             sectionContainer.append(sectionLabel);
 
-            let sectionContent = document.createElement('div');
+            const sectionContent = document.createElement('div');
             sectionContent.classList.add('section-content');
             sectionContainer.append(sectionContent);
 
@@ -138,12 +138,12 @@
             pingContent.classList.add('ping-content');
             pingContainer.append(pingContent);
 
-            setupWebSocket(pingConfig.ip, pingContent);
+            createSocket(pingConfig.ip, pingContent);
 
             return pingContainer;
         }
 
-        function setupWebSocket(ip, pingContent) {
+        function createSocket(ip, pingContent) {
             const socket = new WebSocket("ws://localhost:8080/ping");
 
             socket.onopen = function () {
@@ -159,10 +159,12 @@
                     top: pingContent.scrollHeight
                 });
             };
+
+            return socket;
         }
 
         function getPingResponse(response, pingContent) {
-            let pingResponseDiv = document.createElement('div');
+            const pingResponseDiv = document.createElement('div');
             pingResponseDiv.classList.add('ping-response');
             pingResponseDiv.classList.add('blink');
 
@@ -182,11 +184,12 @@
             if (pingContent.children.length > 3) {
                 pingContent.removeChild(pingContent.firstChild);
             }
+
             return pingResponseDiv;
         }
 
         window.onload = function () {
-            let container = document.querySelector('#start');
+            const container = document.querySelector('#start');
 
             pings.forEach(function (config) {
                 container.append(getSectionContainer(config));
