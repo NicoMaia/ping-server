@@ -83,8 +83,9 @@
                 ips: [
                     {label: "router", ip: "192.168.100.1"},
                     {label: "gateway", ip: "10.255.255.7"},
-                    {label: "cloudflare via redfox", ip: "1.1.1.1"},
-                    {label: "google via redfox", ip: "8.8.4.4"},
+                    {label: "first vivo", ip: "152.255.183.161"},
+                    {label: "google", ip: "8.8.4.4"},
+                    {label: "cloudflare", ip: "1.1.1.1"},
                 ]
             },
             {
@@ -92,8 +93,9 @@
                 ips: [
                     {label: "router", ip: "192.168.0.1"},
                     {label: "gateway", ip: "200.100.88.206"},
-                    {label: "google via vivo", ip: "8.8.8.8"},
-                    {label: "cloudflare via vivo", ip: "1.0.0.1"},
+                    {label: "first vivo", ip: "152.255.183.161"},
+                    {label: "google", ip: "8.8.8.8"},
+                    {label: "cloudflare", ip: "1.0.0.1"},
                 ],
             },
             {
@@ -144,7 +146,7 @@
         }
 
         function createSocket(ip, pingContent) {
-            const socket = new WebSocket("ws://localhost:8080/ping");
+            const socket = new WebSocket(`ws://${document.location.host}/ping`);
 
             socket.onopen = function () {
                 socket.send(ip);
